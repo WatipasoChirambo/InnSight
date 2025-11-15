@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.1.0",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "nuxt": "^4.2.1",
     "typescript": "^5.9.3",
