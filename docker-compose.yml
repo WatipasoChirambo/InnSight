@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: hotel_api
+    ports:
+      - "5000:3000"
+    environment:
+      NODE_ENV: production
+    networks:
+      - hotel-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hotel_frontend
+    ports:
+      - "8080:3000"
+    depends_on:
+      - api
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge
