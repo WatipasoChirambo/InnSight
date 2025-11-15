@@ -1,15 +1,20 @@
-version: "3.9"
-
 services:
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    container_name: hotel_api
+    build: ./api
+    container_name: hotel-api
     ports:
-      - "5000:3000"
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
     environment:
-      NODE_ENV: production
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=hotel_user
+      - DB_PASSWORD=hotel_pass
+      - DB_NAME=hotel_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - hotel-network
 
@@ -17,7 +22,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: hotel_frontend
+    container_name: hotel-frontend
     ports:
       - "8080:3000"
     depends_on:
@@ -25,6 +30,27 @@ services:
     networks:
       - hotel-network
 
+  db:
+    image: postgres:15
+    container_name: hotel-db
+    environment:
+      POSTGRES_USER: hotel_user
+      POSTGRES_PASSWORD: hotel_pass
+      POSTGRES_DB: hotel_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - hotel-network
+
+  redis:
+    image: redis:alpine
+    container_name: hotel-redis
+    networks:
+      - hotel-network
+
 networks:
   hotel-network:
     driver: bridge
+
+volumes:
+  db_data:
